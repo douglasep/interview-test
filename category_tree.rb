@@ -13,11 +13,19 @@ class CategoryTree
     def add_category(category, parent)
         raise ArgumentError.new('Infelizmente esta categoria já existe') if (@categories.values.flatten.any?(category) || @categories.keys.flatten.any?(category)) 
         raise ArgumentError.new('Por favor insira uma sub categoria válida') if (!parent.nil? && category.nil?) 
-        parent.nil? ? @categories[category] = [] : @categories[parent] << category 
+        parent.nil? ? @categories[category] = [] : dig.call(@categories,parent)
+        parent.nil? ? @categories[category] = [] : @categories[parent] << {category => []} 
     end
 
     def get_children(parent_category)
-        @categories[parent_category]
+        dig = -> (hash, key) do
+            return nil if !hash.is_a?(Hash)
+            return hash[key].collect {|k| k.keys}.flatten if hash.keys.any?(parent_category)
+            hash.each do |k,v|
+                dig.call(v, parent_category)
+            end
+        end
+        children = dig.call(@categories, parent_category)
     end
 end
 
