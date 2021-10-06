@@ -11,7 +11,8 @@ class CategoryTree
     end
 
     def add_category(category, parent)
-        raise ArgumentError if (!parent.nil? && !@categories.key?(parent)) || @categories.keys.flatten.any?(category) || @categories.values.flatten.any?(category)
+        raise ArgumentError.new('Infelizmente esta categoria já existe') if (@categories.values.flatten.any?(category) || @categories.keys.flatten.any?(category)) 
+        raise ArgumentError.new('Por favor insira uma sub categoria válida') if (!parent.nil? && category.nil?) 
         parent.nil? ? @categories[category] = [] : @categories[parent] << category 
     end
 
@@ -24,6 +25,7 @@ c = CategoryTree.new
 c.add_category('A', nil)
 c.add_category('B', 'A')
 c.add_category('C', 'A')
+# c.add_category(nil, 'A')
 # c.add_category('A', nil)
 # c.add_category('C', 'A')
 puts (c.get_children('A') || []).join(',')
