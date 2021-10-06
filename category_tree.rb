@@ -11,7 +11,7 @@ class CategoryTree
     end
 
     def add_category(category, parent)
-        raise ArgumentError if ((!parent.nil? && !@categories.key?(parent)) || @categories.flatten.any?(category)) 
+        raise ArgumentError if (!parent.nil? && !@categories.key?(parent)) || @categories.keys.flatten.any?(category) || @categories.values.flatten.any?(category)
         parent.nil? ? @categories[category] = [] : @categories[parent] << category 
     end
 
@@ -24,4 +24,6 @@ c = CategoryTree.new
 c.add_category('A', nil)
 c.add_category('B', 'A')
 c.add_category('C', 'A')
+# c.add_category('A', nil)
+# c.add_category('C', 'A')
 puts (c.get_children('A') || []).join(',')
